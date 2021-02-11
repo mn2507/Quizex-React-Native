@@ -3,8 +3,7 @@ import opentdb from "../api/opentdb";
 
 export default () => {
   const [amount, setAmount] = useState([]);
-  const [categoryName, setCategoryName] = useState([]);
-  const [categoryId, setCategoryId] = useState([]);
+  const [category, setCategory] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const getAmount = async (amountInfo) => {
@@ -18,8 +17,8 @@ export default () => {
 
   const getCategories = async () => {
     const response = await opentdb.get("/api_category.php");
-    setCategoryId(response.data.id);
-    setCategoryName(response.data.name);
+    setCategory(response.data.trivia_categories);
+    // console.log(response.data.trivia_categories)
   };
 
   useEffect(() => {
@@ -27,5 +26,5 @@ export default () => {
     getCategories();
   }, []);
 
-  return [getAmount, getCategories, amount, errorMessage, categoryName, categoryId];
+  return [getAmount, amount, errorMessage, category];
 };

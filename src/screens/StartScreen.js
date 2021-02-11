@@ -13,19 +13,16 @@ import useResults from "../hooks/useResults";
 const StartScreen = ({ navigation }) => {
   const [
     getAmount,
-    getCategories,
     amount,
     errorMessage,
-    categoryName,
-    categoryId,
+    category,
   ] = useResults();
   const [Amount, setAmount] = useState("");
-  const mapCategory = (categories) => {
-    categories = categories.map((category) => {
-      return { label: category.name, value: category.id };
-    });
-  };
-
+  // const mapCategory = (categories) => {
+  //   categories = categories.map((category) => {
+  //     return { label: category.name, value: category.id };
+  //   });
+  // };
   return (
     <View style={styles.container}>
       <TextInput
@@ -38,7 +35,7 @@ const StartScreen = ({ navigation }) => {
         onEndEditing={() => getAmount(Amount)}
       />
       <DropDownPicker
-        items={[{ label: "Item 1", value: "item1" }]}
+        items={[{ label: "categoryName", value: "categoryId" }]}
         defaultIndex={0}
         containerStyle={{ height: 50 }}
         placeholder="Select Category"
@@ -66,6 +63,7 @@ const StartScreen = ({ navigation }) => {
           <Text style={styles.Button}>Start Quiz</Text>
         </TouchableOpacity>
       </View>
+      {errorMessage ? <Text>{errorMessage}</Text> : null}
     </View>
   );
 };
