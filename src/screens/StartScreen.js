@@ -12,20 +12,24 @@ import useResults from "../hooks/useResults";
 
 const StartScreen = ({ navigation }) => {
   const [
-    getAmount,
-    amount,
+    getQuestions,
+    questions,
     errorMessage,
     category,
+    responseCode,
   ] = useResults();
-  const [Amount, setAmount] = useState("");
-  // const mapCategory = (categories) => {
-  //   categories = categories.map((category) => {
-  //     return { label: category.name, value: category.id };
-  //   });
-  // };
+  const [amount, setAmount] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+  const [type, setType] = useState("");
+
+  if (!category.length) {
+    return null;
+  }
+  // console.log(category);
   return (
     <View style={styles.container}>
-      <TextInput
+      {/* <TextInput
         style={styles.inputStyle}
         keyboardType="numeric"
         placeholder="Number of Questions"
@@ -33,33 +37,65 @@ const StartScreen = ({ navigation }) => {
         value={Amount}
         onChangeText={setAmount}
         onEndEditing={() => getAmount(Amount)}
-      />
-      <DropDownPicker
-        items={[{ label: "categoryName", value: "categoryId" }]}
-        defaultIndex={0}
-        containerStyle={{ height: 50 }}
-        placeholder="Select Category"
-        onChangeItem={(item) => console.log(item.label, item.value)}
-      />
-      <DropDownPicker
-        items={[{ label: "Item 1", value: "item1" }]}
-        defaultIndex={0}
-        containerStyle={{ height: 50 }}
-        placeholder="Select Difficulty"
-        onChangeItem={(item) => console.log(item.label, item.value)}
-      />
+      /> */}
+      <Text>Select number of questions</Text>
       <DropDownPicker
         items={[
-          { label: "Item 1", value: "item1" },
-          { label: "Item 2", value: "item2" },
+          { label: "1", value: "11" },
+          { label: "10", value: "1" },
+          { label: "20", value: "2" },
+          { label: "30", value: "3" },
+          { label: "40", value: "4" },
+          { label: "50", value: "5" },
         ]}
-        defaultIndex={0}
+        defaultValue="1"
+        containerStyle={{ height: 50 }}
+        onChangeItem={(item) => setAmount(item.label)}
+      />
+      <Text>Select category</Text>
+      <DropDownPicker
+        items={category}
+        defaultValue="any"
+        containerStyle={{ height: 50 }}
+        onChangeItem={(item) => setCategoryId(item.value)}
+      />
+      <Text>Select difficulty</Text>
+      <DropDownPicker
+        items={[
+          { label: "Any", value: "any" },
+          { label: "Easy", value: "easy" },
+          { label: "Medium", value: "medium" },
+          { label: "Hard", value: "hard" },
+        ]}
+        defaultValue="any"
+        containerStyle={{ height: 50 }}
+        placeholder="Select Difficulty"
+        onChangeItem={(item) => setDifficulty(item.value)}
+      />
+      <Text>Select type</Text>
+      <DropDownPicker
+        items={[
+          { label: "Any", value: "any" },
+          { label: "Multiple Choice", value: "multiple" },
+          { label: "True/False", value: "boolean" },
+        ]}
+        defaultValue="any"
         containerStyle={{ height: 50 }}
         placeholder="Select Type"
-        onChangeItem={(item) => console.log(item.label, item.value)}
+        onChangeItem={(item) => setType(item.value)}
       />
       <View>
-        <TouchableOpacity onPress={() => navigation.navigate("Question")}>
+        <TouchableOpacity
+          onPress={() => {
+            getQuestions(amount, categoryId, difficulty, type);
+            !responseCode == 1 ? (
+              navigation.navigate("Question")
+            ) : (
+              <Text>Questions unavailable with these selection.</Text>
+            );
+            console.log(responseCode);
+          }}
+        >
           <Text style={styles.Button}>Start Quiz</Text>
         </TouchableOpacity>
       </View>

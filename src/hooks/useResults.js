@@ -2,29 +2,59 @@ import { useEffect, useState } from "react";
 import opentdb from "../api/opentdb";
 
 export default () => {
-  const [amount, setAmount] = useState([]);
-  const [category, setCategory] = useState("");
+  const [questions, setQuestions] = useState([]);
+  const [category, setCategory] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [responseCode, setResponseCode] = useState("");
 
-  const getAmount = async (amountInfo) => {
+  // const getAmount = async (amountInfo) => {
+  //   try {
+  //     const response = await opentdb.get(`/api.php?amount=${amountInfo}`);
+  //     setAmount(response.data); //use amount to set questions
+  //   } catch (e) {
+  //     setErrorMessage("Something went wrong!");
+  //   }
+  // };
+
+  const getCategories = async () => {
+    try{
+    const response = await opentdb.get("/api_category.php");
+    let categories = response.data.trivia_categories;
+    categories = categories.map((category) => {
+      return {
+        value: category.id,
+        label: category.name,
+        selected: "false",
+      };
+    });
+    categories.push({ value: -1, label: "Any", selected: "true" });
+    setCategory(categories);
+    // console.log(response.data.trivia_categories);
+  } catch (e){
+    console.log("getCategories " + e)
+  }
+  };
+
+  const getQuestions = async (amount, category, difficulty, type) => {
     try {
-      const response = await opentdb.get(`/api.php?amount=${amountInfo}`);
-      setAmount(response.data);
+      const response = await opentdb.get(
+        `/api.php?amount=${amount}` +
+          (category !== -1 ? `&category=${category}` : "") +
+          (difficulty !== "any" ? `&difficulty=${difficulty}` : "") +
+          (type !== "any" ? `&type=${type}` : "")
+      );
+      // console.log("question response: " + response.data.results.question);
+      setQuestions(response.data);
+      setResponseCode(response.data.response_code);
+      // console.log(response.data.response_code + "code");
     } catch (e) {
-      setErrorMessage("Something went wrong!");
+      setErrorMessage("Something went wrong!" + e);
     }
   };
 
-  const getCategories = async () => {
-    const response = await opentdb.get("/api_category.php");
-    setCategory(response.data.trivia_categories);
-    // console.log(response.data.trivia_categories)
-  };
-
   useEffect(() => {
-    getAmount("10");
     getCategories();
   }, []);
 
-  return [getAmount, amount, errorMessage, category];
+  return [getQuestions, questions, errorMessage, category, responseCode];
 };
