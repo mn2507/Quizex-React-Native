@@ -43,9 +43,9 @@ export default () => {
           (difficulty !== "any" ? `&difficulty=${difficulty}` : "") +
           (type !== "any" ? `&type=${type}` : "")
       );
-      console.log("response" + response.data.results)
-      console.log("question response: " + response.data.results[0].question);
-      console.log("cat response: " + response.data.results[0].category);
+      // console.log("response" + response.data.results)
+      // console.log("question response: " + response.data.results[0].question);
+      // console.log("cat response: " + response.data.results[0].category);
       setQuestions(response.data.results);
       setResponseCode(response.data.response_code);
       return response.data.results;
