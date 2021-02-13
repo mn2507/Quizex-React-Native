@@ -55,7 +55,7 @@ const StartScreen = ({ navigation }) => {
       <Text>Select category</Text>
       <DropDownPicker
         items={category}
-        defaultValue="any"
+        defaultValue= {-1}
         containerStyle={{ height: 50 }}
         onChangeItem={(item) => setCategoryId(item.value)}
       />
@@ -87,13 +87,18 @@ const StartScreen = ({ navigation }) => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            getQuestions(amount, categoryId, difficulty, type);
-            !responseCode == 1 ? (
-              navigation.navigate("Question")
-            ) : (
-              <Text>Questions unavailable with these selection.</Text>
-            );
-            console.log(responseCode);
+       //     getQuestions(amount, categoryId, difficulty, type);
+            // !responseCode == 1 ? (
+              navigation.navigate("Question", {
+                amount:amount,
+                categoryId:categoryId,
+                difficulty:difficulty,
+                type:type 
+              })
+            // ) : (
+              // <Text>Questions unavailable with these selection.</Text>
+            // );
+            // console.log(responseCode);
           }}
         >
           <Text style={styles.Button}>Start Quiz</Text>
