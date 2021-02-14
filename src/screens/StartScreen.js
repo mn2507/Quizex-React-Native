@@ -18,7 +18,7 @@ const StartScreen = ({ navigation }) => {
     category,
     responseCode,
   ] = useResults();
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("10");
   const [categoryId, setCategoryId] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [type, setType] = useState("");
@@ -41,7 +41,6 @@ const StartScreen = ({ navigation }) => {
       <Text>Select number of questions</Text>
       <DropDownPicker
         items={[
-          { label: "1", value: "11" },
           { label: "10", value: "1" },
           { label: "20", value: "2" },
           { label: "30", value: "3" },
@@ -51,6 +50,7 @@ const StartScreen = ({ navigation }) => {
         defaultValue="1"
         containerStyle={{ height: 50 }}
         onChangeItem={(item) => setAmount(item.label)}
+
       />
       <Text>Select category</Text>
       <DropDownPicker

@@ -5207,6 +5207,11 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
+react-native-countdown-circle@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-countdown-circle/-/react-native-countdown-circle-3.0.1.tgz#7905688ee21a37f1a6d41ea1d14a5bc5f83b2603"
+  integrity sha512-S2O2/VyV9/i6RfLkqrWBi8u5oyh/I3+7ftlet1uRlpx/REf4bCKd6CUMNeOhgsWC+Hqxr32EQ6vjOmtG0GofQA==
+
 react-native-dropdown-picker@^3.8.0:
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-3.8.0.tgz#42df896f8bc1b54b9a2c0a518c02904d5cdeed5d"
