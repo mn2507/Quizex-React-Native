@@ -7,6 +7,7 @@ import DateTimeSetter from "../components/DateTimeSetter";
 import jsonServer from "../api/jsonServer";
 import pushResults from "../hooks/pushResults";
 import { Header } from "react-native/Libraries/NewAppScreen";
+import shuffle from "shuffle-array";
 
 const QuestionScreen = ({ navigation }) => {
   var [questions, setQuestions] = useState([]);
@@ -58,6 +59,13 @@ const QuestionScreen = ({ navigation }) => {
       NextQuestion(result);
     });
   }, []);
+
+  /**
+  @description	SHUFFLE THE ANSWERS
+  */
+  var shuffle = require("shuffle-array"),
+    individualAnswer;
+  shuffle(individualAnswer);
 
   if (!questions.length) {
     return (
@@ -164,7 +172,7 @@ const styles = StyleSheet.create({
   },
   LoadingContainer: {
     flexDirection: "row",
-    flex:1,
+    flex: 1,
     padding: 15,
     justifyContent: "center",
   },
