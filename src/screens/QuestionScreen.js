@@ -16,7 +16,7 @@ const QuestionScreen = ({ navigation }) => {
   var [correctAnswer, setCorrectAnswer] = useState([]);
   var [message, setMessage] = useState("");
   var [counter, setCounter] = useState(0);
-  var [answeredCorrect, setAnsweredCorrect] = useState(1);
+  var [answeredCorrect, setAnsweredCorrect] = useState(0);
   var [finalScore, setFinalScore] = useState("");
   var [second, setSecond] = useState(10);
   var [completedTime, setCompletedTime] = useState("");
@@ -93,9 +93,9 @@ const QuestionScreen = ({ navigation }) => {
                 setFinalScore(answeredCorrect + "/" + TOTAL_QUESTIONS);
                 setCompletedTime(currentDate);
                 var CompletedTime = currentDate;
+                var FINAL_SCORE = answeredCorrect + "/" + TOTAL_QUESTIONS;
                 console.log("finalScore: " + finalScore);
                 console.log("CompletedTime: " + CompletedTime);
-                console.log("completedTime: " + completedTime);
 
                 /**
               @description	NAVIGATE TO SCOREBOARD
@@ -103,14 +103,14 @@ const QuestionScreen = ({ navigation }) => {
                 setTimeout(() => {
                   navigation.navigate("ScoreBoard");
                 }, 1000);
-                AddResultsToDb(CompletedTime, finalScore);
+                AddResultsToDb(CompletedTime, FINAL_SCORE);
                 return;
               }
               /**
               @description	ANSWER VALIDATION
              */
-              setSecond(10);
-              console.log("countdown: " + second);
+              // setSecond(10);
+              // console.log("countdown: " + second);
               correctAnswer === item
                 ? (setAnsweredCorrect(answeredCorrect + 1),
                   setMessage("You have answered correctly"))

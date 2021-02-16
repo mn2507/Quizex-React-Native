@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, BackHandler } from "react-native";
+import { HeaderBackButton } from "react-navigation-stack";
 import DateTimeSetter from "../components/DateTimeSetter";
 import pushResults from "../hooks/pushResults";
 
@@ -8,6 +9,10 @@ const ScoreBoardScreen = ({ navigation }) => {
   // const CompletedTime = navigation.getParam("CompletedTime");
   // const finalScore = navigation.getParam("finalScore");
   const [AddResultsToDb, dbResults] = pushResults();
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", () => true);
+  }, []);
 
   //   const GetResultsFromDb = ()
 
@@ -21,7 +26,9 @@ const ScoreBoardScreen = ({ navigation }) => {
     return (
       <>
         <View style={styles.Header}>
-          <Text style={styles.HeaderTextLeft}>Completed{"\n"}Date {"&"} Time</Text>
+          <Text style={styles.HeaderTextLeft}>
+            Completed{"\n"}Date {"&"} Time
+          </Text>
           <Text style={styles.HeaderTextRight}>Overall{"\n"}Score</Text>
         </View>
         <FlatList
@@ -31,7 +38,9 @@ const ScoreBoardScreen = ({ navigation }) => {
             // console.log("item: " + item)
             return (
               <View style={styles.ScoreResultsStyle}>
-                <Text style={styles.CompletedTimeStyle}>{item.completedTime}</Text>
+                <Text style={styles.CompletedTimeStyle}>
+                  {item.completedTime}
+                </Text>
                 <Text style={styles.FinalScoreStyle}>{item.finalScore}</Text>
               </View>
             );
@@ -42,10 +51,18 @@ const ScoreBoardScreen = ({ navigation }) => {
   }
 };
 
+ScoreBoardScreen.navigationOptions = ({ navigation }) => {
+  return {
+    headerLeft: () => (
+      <HeaderBackButton onPress={() => navigation.popToTop()} />
+    ),
+  };
+};
+
 const styles = StyleSheet.create({
   LoadingContainer: {
     flexDirection: "row",
-    flex:1,
+    flex: 1,
     padding: 15,
     justifyContent: "center",
   },
@@ -81,11 +98,11 @@ const styles = StyleSheet.create({
   },
   FinalScoreStyle: {
     fontWeight: "bold",
-    fontSize: 15
+    fontSize: 15,
   },
   CompletedTimeStyle: {
-    fontSize: 15
-  }
+    fontSize: 15,
+  },
 });
 
 export default ScoreBoardScreen;
