@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import useResults from "../hooks/useResults";
+import { EvilIcons } from "@expo/vector-icons";
 
 const StartScreen = ({ navigation }) => {
   const [
@@ -18,7 +19,7 @@ const StartScreen = ({ navigation }) => {
     category,
     responseCode,
   ] = useResults();
-  const [amount, setAmount] = useState("10");
+  const [amount, setAmount] = useState("1");
   const [categoryId, setCategoryId] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [type, setType] = useState("");
@@ -38,7 +39,7 @@ const StartScreen = ({ navigation }) => {
         onChangeText={setAmount}
         onEndEditing={() => getAmount(Amount)}
       /> */}
-      <Text>Select number of questions</Text>
+      <Text style={styles.titleStyle}>Select number of questions</Text>
       <DropDownPicker
         items={[
           { label: "10", value: "1" },
@@ -46,20 +47,23 @@ const StartScreen = ({ navigation }) => {
           { label: "30", value: "3" },
           { label: "40", value: "4" },
           { label: "50", value: "5" },
+          { label: "1", value: "11" },
         ]}
-        defaultValue="1"
+        defaultValue="11"
         containerStyle={{ height: 50 }}
+        labelStyle={{fontSize: 16, color: '#0082FF'}}
         onChangeItem={(item) => setAmount(item.label)}
 
       />
-      <Text>Select category</Text>
+      <Text style={styles.titleStyle}>Select category</Text>
       <DropDownPicker
         items={category}
         defaultValue= {-1}
         containerStyle={{ height: 50 }}
+        labelStyle={{fontSize: 16, color: '#0082FF'}}
         onChangeItem={(item) => setCategoryId(item.value)}
       />
-      <Text>Select difficulty</Text>
+      <Text style={styles.titleStyle}>Select difficulty</Text>
       <DropDownPicker
         items={[
           { label: "Any", value: "any" },
@@ -69,10 +73,11 @@ const StartScreen = ({ navigation }) => {
         ]}
         defaultValue="any"
         containerStyle={{ height: 50 }}
+        labelStyle={{fontSize: 16, color: '#0082FF'}}
         placeholder="Select Difficulty"
         onChangeItem={(item) => setDifficulty(item.value)}
       />
-      <Text>Select type</Text>
+      <Text style={styles.titleStyle}>Select type</Text>
       <DropDownPicker
         items={[
           { label: "Any", value: "any" },
@@ -81,6 +86,7 @@ const StartScreen = ({ navigation }) => {
         ]}
         defaultValue="any"
         containerStyle={{ height: 50 }}
+        labelStyle={{fontSize: 16, color: '#0082FF'}}
         placeholder="Select Type"
         onChangeItem={(item) => setType(item.value)}
       />
@@ -109,6 +115,16 @@ const StartScreen = ({ navigation }) => {
   );
 };
 
+StartScreen.navigationOptions = ({ navigation }) => {
+  return {
+    headerRight: () => (
+      <TouchableOpacity onPress={() => navigation.navigate("ScoreBoard")}>
+        <EvilIcons name="trophy" size={45} />
+      </TouchableOpacity>
+    ),
+  };
+};
+
 const styles = StyleSheet.create({
   pickerStyle: {
     marginVertical: 10,
@@ -121,14 +137,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
-  inputStyle: {
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 5,
-    marginHorizontal: 15,
+  titleStyle: {
+    fontSize: 15,
     marginVertical: 10,
-    padding: 10,
+    alignSelf: "center",
+    fontWeight: "bold",
   },
   Button: {
     marginVertical: 100,

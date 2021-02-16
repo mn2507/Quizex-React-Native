@@ -5,7 +5,7 @@ export default () => {
   const [questions, setQuestions] = useState([]);
   const [category, setCategory] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [responseCode, setResponseCode] = useState("");
+  const [responseCode, setResponseCode] = useState(0);
 
   // const getAmount = async (amountInfo) => {
   //   try {
