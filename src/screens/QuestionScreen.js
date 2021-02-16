@@ -62,7 +62,7 @@ const QuestionScreen = ({ navigation }) => {
   if (!questions.length) {
     return (
       <View style={styles.container}>
-        <Text>Loading questions...</Text>
+        <Text style={styles.LoadingStyle}>Loading questions...</Text>
       </View>
     );
   } else if (!responseCode == 0 || questions.length == null) {
@@ -161,6 +161,13 @@ const QuestionScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+  },
+  LoadingStyle: {
+    // flexDirection: "row",
+    fontWeight: "bold",
+    fontSize: 20,
+    // justifyContent: "center",
+    borderWidth: 1
   },
   questionStyle: {
     fontSize: 20,

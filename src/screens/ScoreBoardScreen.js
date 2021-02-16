@@ -11,25 +11,66 @@ const ScoreBoardScreen = ({ navigation }) => {
 
   //   const GetResultsFromDb = ()
 
-  return (
-    <View>
-      {/* <Text>Current Date and Time: {CompletedTime}</Text> */}
-      <FlatList
-        data={dbResults}
-        keyExtractor={(result) => result.completedTime}
-        renderItem={({ item }) => {
-          // console.log("item: " + item)
-          return (
-            <Text>
-              Started Time: {item.completedTime} Overall Score: {item.finalScore}
-            </Text>
-          );
-        }}
-      />
-    </View>
-  );
+  if (!dbResults.length) {
+    return (
+      <View>
+        <Text>Loading Scoreboard...</Text>
+      </View>
+    );
+  } else {
+    return (
+      <>
+        <View style={styles.Header}>
+          <Text style={styles.HeaderTextLeft}>Completed{"\n"}Date {"&"} Time</Text>
+          <Text style={styles.HeaderTextRight}>Overall{"\n"}Score</Text>
+        </View>
+        <FlatList
+          data={dbResults}
+          keyExtractor={(result) => result.completedTime}
+          renderItem={({ item }) => {
+            // console.log("item: " + item)
+            return (
+              <View style={styles.ScoreResultsStyle}>
+                <Text>{item.completedTime}</Text>
+                <Text style={styles.FinalScoreStyle}>{item.finalScore}</Text>
+              </View>
+            );
+          }}
+        />
+      </>
+    );
+  }
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  Header: {
+    padding: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  HeaderTextLeft: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#0082FF",
+  },
+  HeaderTextRight: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "right",
+    color: "#0082FF",
+  },
+  ScoreResultsStyle: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    borderTopWidth: 1,
+    borderColor: "gray",
+  },
+  FinalScoreStyle: {
+    fontWeight: "bold",
+    fontSize: 15
+  }
+});
 
 export default ScoreBoardScreen;

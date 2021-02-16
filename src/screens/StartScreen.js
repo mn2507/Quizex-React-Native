@@ -51,16 +51,15 @@ const StartScreen = ({ navigation }) => {
         ]}
         defaultValue="11"
         containerStyle={{ height: 50 }}
-        labelStyle={{fontSize: 16, color: '#0082FF'}}
+        labelStyle={{ fontSize: 16, color: "#0082FF" }}
         onChangeItem={(item) => setAmount(item.label)}
-
       />
       <Text style={styles.titleStyle}>Select category</Text>
       <DropDownPicker
         items={category}
-        defaultValue= {-1}
+        defaultValue={-1}
         containerStyle={{ height: 50 }}
-        labelStyle={{fontSize: 16, color: '#0082FF'}}
+        labelStyle={{ fontSize: 16, color: "#0082FF" }}
         onChangeItem={(item) => setCategoryId(item.value)}
       />
       <Text style={styles.titleStyle}>Select difficulty</Text>
@@ -73,7 +72,7 @@ const StartScreen = ({ navigation }) => {
         ]}
         defaultValue="any"
         containerStyle={{ height: 50 }}
-        labelStyle={{fontSize: 16, color: '#0082FF'}}
+        labelStyle={{ fontSize: 16, color: "#0082FF" }}
         placeholder="Select Difficulty"
         onChangeItem={(item) => setDifficulty(item.value)}
       />
@@ -86,23 +85,23 @@ const StartScreen = ({ navigation }) => {
         ]}
         defaultValue="any"
         containerStyle={{ height: 50 }}
-        labelStyle={{fontSize: 16, color: '#0082FF'}}
+        labelStyle={{ fontSize: 16, color: "#0082FF" }}
         placeholder="Select Type"
         onChangeItem={(item) => setType(item.value)}
       />
       <View>
         <TouchableOpacity
           onPress={() => {
-       //     getQuestions(amount, categoryId, difficulty, type);
+            //     getQuestions(amount, categoryId, difficulty, type);
             // !responseCode == 1 ? (
-              navigation.navigate("Question", {
-                amount:amount,
-                categoryId:categoryId,
-                difficulty:difficulty,
-                type:type 
-              })
+            navigation.navigate("Question", {
+              amount: amount,
+              categoryId: categoryId,
+              difficulty: difficulty,
+              type: type,
+            });
             // ) : (
-              // <Text>Questions unavailable with these selection.</Text>
+            // <Text>Questions unavailable with these selection.</Text>
             // );
             // console.log(responseCode);
           }}
@@ -118,7 +117,7 @@ const StartScreen = ({ navigation }) => {
 StartScreen.navigationOptions = ({ navigation }) => {
   return {
     headerRight: () => (
-      <TouchableOpacity onPress={() => navigation.navigate("ScoreBoard")}>
+      <TouchableOpacity style={styles.headerIcon} onPress={() => navigation.navigate("ScoreBoard")}>
         <EvilIcons name="trophy" size={45} />
       </TouchableOpacity>
     ),
@@ -126,16 +125,11 @@ StartScreen.navigationOptions = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  pickerStyle: {
-    marginVertical: 10,
-    flex: 1,
-    marginHorizontal: 15,
-    padding: 25,
-    borderColor: "black",
-    backgroundColor: "#E3E1E1",
-  },
   container: {
-    padding: 10,
+    padding: 15,
+  },
+  headerIcon: {
+    marginEnd: 10,
   },
   titleStyle: {
     fontSize: 15,
@@ -144,10 +138,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   Button: {
-    marginVertical: 100,
-    alignSelf: "center",
-    fontSize: 30,
+    backgroundColor: "#00B0FF",
+    color: "white",
+    marginVertical: 70,
+    textAlign: "center",
+    fontSize: 20,
     fontWeight: "bold",
+    padding: 10,
+    borderRadius: 5,
   },
 });
 
