@@ -61,7 +61,7 @@ const QuestionScreen = ({ navigation }) => {
 
   if (!questions.length) {
     return (
-      <View style={styles.container}>
+      <View style={styles.LoadingContainer}>
         <Text style={styles.LoadingStyle}>Loading questions...</Text>
       </View>
     );
@@ -162,12 +162,17 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
   },
+  LoadingContainer: {
+    flexDirection: "row",
+    flex:1,
+    padding: 15,
+    justifyContent: "center",
+  },
   LoadingStyle: {
-    // flexDirection: "row",
     fontWeight: "bold",
-    fontSize: 20,
-    // justifyContent: "center",
-    borderWidth: 1
+    fontSize: 25,
+    alignSelf: "center",
+    fontStyle: "italic",
   },
   questionStyle: {
     fontSize: 20,

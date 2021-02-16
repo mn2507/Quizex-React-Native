@@ -13,8 +13,8 @@ const ScoreBoardScreen = ({ navigation }) => {
 
   if (!dbResults.length) {
     return (
-      <View>
-        <Text>Loading Scoreboard...</Text>
+      <View style={styles.LoadingContainer}>
+        <Text style={styles.LoadingStyle}>Loading Scoreboard...</Text>
       </View>
     );
   } else {
@@ -31,7 +31,7 @@ const ScoreBoardScreen = ({ navigation }) => {
             // console.log("item: " + item)
             return (
               <View style={styles.ScoreResultsStyle}>
-                <Text>{item.completedTime}</Text>
+                <Text style={styles.CompletedTimeStyle}>{item.completedTime}</Text>
                 <Text style={styles.FinalScoreStyle}>{item.finalScore}</Text>
               </View>
             );
@@ -43,6 +43,18 @@ const ScoreBoardScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  LoadingContainer: {
+    flexDirection: "row",
+    flex:1,
+    padding: 15,
+    justifyContent: "center",
+  },
+  LoadingStyle: {
+    fontWeight: "bold",
+    fontSize: 25,
+    alignSelf: "center",
+    fontStyle: "italic",
+  },
   Header: {
     padding: 15,
     flexDirection: "row",
@@ -65,10 +77,13 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 15,
     borderTopWidth: 1,
-    borderColor: "gray",
+    borderColor: "#CECECE",
   },
   FinalScoreStyle: {
     fontWeight: "bold",
+    fontSize: 15
+  },
+  CompletedTimeStyle: {
     fontSize: 15
   }
 });
