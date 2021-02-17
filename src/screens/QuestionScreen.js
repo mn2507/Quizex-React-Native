@@ -8,11 +8,9 @@ import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 var he = require("he");
 
 const QuestionScreen = ({ navigation }) => {
-  let answeredCorrectly = 0;
   var [questions, setQuestions] = useState([]);
   var [individualQuestion, setIndividualQuestion] = useState("");
   var [individualAnswer, setIndividualAnswers] = useState([]);
-
   var [correctAnswer, setCorrectAnswer] = useState([]);
   var [correctMessage, setCorrectMessage] = useState("");
   var [wrongMessage, setWrongMessage] = useState("");
@@ -21,16 +19,16 @@ const QuestionScreen = ({ navigation }) => {
   var [finalScore, setFinalScore] = useState("");
   var [second, setSecond] = useState(0);
   var [responseCode, setResponseCode] = useState(null);
-  var [flag, setFlag] = useState(0);
+  var [flag, setFlag] = useState(true);
 
   var TOTAL_QUESTIONS = navigation.getParam("amount");
 
   const [
     getQuestions,
-    questions1,
+    Questions,
     errorMessage,
     category,
-    responseCode8,
+    ResponseCode,
   ] = useResults();
   const [currentDate] = DateTimeSetter();
   const [AddResultsToDb, dbResults] = pushResults();
@@ -59,7 +57,6 @@ const QuestionScreen = ({ navigation }) => {
       navigation.getParam("type")
     ).then(function (result) {
       var finalResponseCode = result.response_code;
-
       if (finalResponseCode != 0) {
         setResponseCode(result.response_code);
       } else {
@@ -80,11 +77,6 @@ const QuestionScreen = ({ navigation }) => {
       return;
     });
   };
-
-  var entities = require("html-entities"),
-    individualQuestion,
-    individualAnswer;
-  entities.decode(individualQuestion, individualAnswer);
 
   if (responseCode == null) {
     return (
@@ -126,7 +118,7 @@ const QuestionScreen = ({ navigation }) => {
               @description	IF QUIZ IS COMPLETED
              */
               if (counter == TOTAL_QUESTIONS) {
-                setFlag(1);
+                setFlag(false);
                 QuestionsCompleted();
               } else {
                 setTimeout(() => {
@@ -167,14 +159,12 @@ const QuestionScreen = ({ navigation }) => {
                 setWrongMessage("");
                 setSecond((prevKey) => prevKey + 1);
                 NextQuestion(questions);
-                console.log("timertrue" + counter + " " + TOTAL_QUESTIONS);
                 return [true, 1000];
-              } else if (counter == TOTAL_QUESTIONS && flag == 0) {
+              } else if (counter == TOTAL_QUESTIONS && flag == true) {
+                console.log("testercircle3")
                 QuestionsCompleted();
-                console.log("timertrue2222" + counter + " " + TOTAL_QUESTIONS);
                 return [false, 0];
               } else {
-                console.log("timerfalse" + counter + " " + TOTAL_QUESTIONS);
                 return [false, 0];
               }
             }}
