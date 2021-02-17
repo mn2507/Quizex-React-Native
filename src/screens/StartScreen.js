@@ -19,7 +19,7 @@ const StartScreen = ({ navigation }) => {
     category,
     responseCode,
   ] = useResults();
-  const [amount, setAmount] = useState("1");
+  const [amount, setAmount] = useState("10");
   const [categoryId, setCategoryId] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [type, setType] = useState("");
@@ -47,9 +47,8 @@ const StartScreen = ({ navigation }) => {
           { label: "30", value: "3" },
           { label: "40", value: "4" },
           { label: "50", value: "5" },
-          { label: "1", value: "11" },
         ]}
-        defaultValue="11"
+        defaultValue="1"
         containerStyle={{ height: 50 }}
         labelStyle={{ fontSize: 16, color: "#0082FF" }}
         onChangeItem={(item) => setAmount(item.label)}

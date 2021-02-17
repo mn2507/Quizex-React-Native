@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import useResults from "../hooks/useResults";
-import { AntDesign } from "@expo/vector-icons";
-import CountdownCircle from "react-native-countdown-circle";
 import DateTimeSetter from "../components/DateTimeSetter";
-import jsonServer from "../api/jsonServer";
 import pushResults from "../hooks/pushResults";
 import { Header } from "react-native/Libraries/NewAppScreen";
 import shuffle from "shuffle-array";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { decode } from "html-entities";
 import { Entities } from "html-entities";
+var he = require('he');
 
 const QuestionScreen = ({ navigation }) => {
   let answeredCorrectly = 0;
@@ -46,11 +44,20 @@ const QuestionScreen = ({ navigation }) => {
     setQuestions(questions);
     var combineAnswers = questions[counter].incorrect_answers;
     combineAnswers.push(questions[counter].correct_answer);
+    var shuffle = require("shuffle-array"),
+      combineAnswers;
+    shuffle(combineAnswers);
+
+  var newCombineAnswers = combineAnswers.map((value,index)=>{
+      return he.unescape(value)
+  })
+
     setIndividualQuestion(
-      questions[counter].question.replace(/(&quot\;)/g, '"')
+      he.unescape(questions[counter].question)
+    //  questions[counter].question.replace(/(&quot\;)/g, '"')
     );
-    setCorrectAnswer(questions[counter].correct_answer);
-    setIndividualAnswers(combineAnswers);
+    setCorrectAnswer(he.unescape(questions[counter].correct_answer));
+    setIndividualAnswers(newCombineAnswers);
   };
 
   useEffect(() => {
@@ -75,7 +82,7 @@ const QuestionScreen = ({ navigation }) => {
 
   const QuestionsCompleted = () => {
     setAnsweredCorrect((state) => {
-      //  setFinalScore(state + "/" + TOTAL_QUESTIONS);
+       setFinalScore(state + "/" + TOTAL_QUESTIONS);
       //  setCompletedTime((timeCompleted) => timeCompleted + currentDate);
       var CompletedTime = currentDate;
       var FINAL_SCORE = state + "/" + TOTAL_QUESTIONS;
@@ -89,6 +96,8 @@ const QuestionScreen = ({ navigation }) => {
     });
   };
 
+
+
   var entities = require("html-entities"),
     individualQuestion,
     individualAnswer;
@@ -97,9 +106,6 @@ const QuestionScreen = ({ navigation }) => {
   /**
   @description	SHUFFLE THE ANSWERS
   */
-  // var shuffle = require("shuffle-array"),
-  //   individualAnswer;
-  // shuffle(individualAnswer);
 
   if (responseCode == null) {
     return (
@@ -111,7 +117,7 @@ const QuestionScreen = ({ navigation }) => {
     return (
       <View style={styles.container}>
         {/* {console.log("Response code: " + responseCode)} */}
-        <Text>Questions unavailable with these selection.</Text>
+        <Text>Questions unavailable with selected options.{"\n"}Please navigate back and try a different selection.</Text>
       </View>
     );
   } else {
