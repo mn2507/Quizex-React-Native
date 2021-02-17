@@ -9,6 +9,8 @@ import pushResults from "../hooks/pushResults";
 import { Header } from "react-native/Libraries/NewAppScreen";
 import shuffle from "shuffle-array";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import { decode } from "html-entities";
+import { Entities } from "html-entities";
 
 const QuestionScreen = ({ navigation }) => {
   let answeredCorrectly = 0;
@@ -25,6 +27,7 @@ const QuestionScreen = ({ navigation }) => {
   var [second, setSecond] = useState(0);
   var [responseCode, setResponseCode] = useState(null);
   var [completedTime, setCompletedTime] = useState("");
+  var [flag, setFlag] = useState(0);
 
   var TOTAL_QUESTIONS = navigation.getParam("amount");
 
@@ -48,11 +51,7 @@ const QuestionScreen = ({ navigation }) => {
     );
     setCorrectAnswer(questions[counter].correct_answer);
     setIndividualAnswers(combineAnswers);
-
-    // console.log("counter: " + counter);
   };
-
-  // answeredCorrect[0]["answered"] = "Correctly";
 
   useEffect(() => {
     getQuestions(
@@ -73,6 +72,27 @@ const QuestionScreen = ({ navigation }) => {
       }
     });
   }, []);
+
+  const QuestionsCompleted = () => {
+    setAnsweredCorrect((state) => {
+      //  setFinalScore(state + "/" + TOTAL_QUESTIONS);
+      //  setCompletedTime((timeCompleted) => timeCompleted + currentDate);
+      var CompletedTime = currentDate;
+      var FINAL_SCORE = state + "/" + TOTAL_QUESTIONS;
+      console.log("finalScore: " + finalScore);
+      console.log("CompletedTime: " + CompletedTime);
+      setTimeout(() => {
+        navigation.navigate("ScoreBoard");
+      }, 1000);
+      AddResultsToDb(currentDate, FINAL_SCORE);
+      return;
+    });
+  };
+
+  var entities = require("html-entities"),
+    individualQuestion,
+    individualAnswer;
+  entities.decode(individualQuestion, individualAnswer);
 
   /**
   @description	SHUFFLE THE ANSWERS
@@ -114,32 +134,12 @@ const QuestionScreen = ({ navigation }) => {
               if (correctAnswer === item) {
                 setAnsweredCorrect(answeredCorrect + 1);
                 setCorrectMessage("CORRECT!");
-
-                //  console.log("Entering correct answer" + answeredCorrect)
               } else {
                 setWrongMessage("WRONG!");
               }
               if (counter == TOTAL_QUESTIONS) {
-                setAnsweredCorrect((state) => {
-                  setFinalScore(state + "/" + TOTAL_QUESTIONS);
-                  setCompletedTime(
-                    (timeCompleted) => timeCompleted + currentDate
-                  );
-                  var CompletedTime = currentDate;
-                  var FINAL_SCORE = state + "/" + TOTAL_QUESTIONS;
-                  console.log("finalScore: " + finalScore);
-                  console.log("CompletedTime: " + CompletedTime);
-                  console.log("completedTime: " + completedTime);
-
-                  /**
-                @description	NAVIGATE TO SCOREBOARD
-               */
-                  setTimeout(() => {
-                    navigation.navigate("ScoreBoard");
-                  }, 1000);
-                  AddResultsToDb(CompletedTime, FINAL_SCORE);
-                  return;
-                });
+                setFlag(1);
+                QuestionsCompleted();
               } else {
                 setTimeout(() => {
                   setCorrectMessage("");
@@ -172,10 +172,6 @@ const QuestionScreen = ({ navigation }) => {
               /**
               @description	DELAY TO NEXT QUESTION
              */
-
-              // setAnsweredCorrect([counter]["answered"] = "correct");
-              // console.log("Chosen Answer", item);
-              // console.log("answercorrect: " + answeredCorrect);
             }}
           >
             <Text style={styles.answerStyle}>{item}</Text>
@@ -211,6 +207,10 @@ const QuestionScreen = ({ navigation }) => {
                 NextQuestion(questions);
                 console.log("timertrue" + counter + " " + TOTAL_QUESTIONS);
                 return [true, 1000];
+              } else if (counter == TOTAL_QUESTIONS && flag == 0) {
+                QuestionsCompleted();
+                console.log("timertrue2222" + counter + " " + TOTAL_QUESTIONS);
+                return [false, 0];
               } else {
                 console.log("timerfalse" + counter + " " + TOTAL_QUESTIONS);
                 return [false, 0];
