@@ -27,18 +27,8 @@ const StartScreen = ({ navigation }) => {
   if (!category.length) {
     return null;
   }
-  // console.log(category);
   return (
     <View style={styles.container}>
-      {/* <TextInput
-        style={styles.inputStyle}
-        keyboardType="numeric"
-        placeholder="Number of Questions"
-        numeric
-        value={Amount}
-        onChangeText={setAmount}
-        onEndEditing={() => getAmount(Amount)}
-      /> */}
       <Text style={styles.titleStyle}>Select number of questions</Text>
       <DropDownPicker
         items={[
@@ -91,18 +81,12 @@ const StartScreen = ({ navigation }) => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            //     getQuestions(amount, categoryId, difficulty, type);
-            // !responseCode == 1 ? (
             navigation.navigate("Question", {
               amount: amount,
               categoryId: categoryId,
               difficulty: difficulty,
               type: type,
             });
-            // ) : (
-            // <Text>Questions unavailable with these selection.</Text>
-            // );
-            // console.log(responseCode);
           }}
         >
           <Text style={styles.Button}>Start Quiz</Text>

@@ -4,11 +4,8 @@ import useResults from "../hooks/useResults";
 import DateTimeSetter from "../components/DateTimeSetter";
 import pushResults from "../hooks/pushResults";
 import { Header } from "react-native/Libraries/NewAppScreen";
-import shuffle from "shuffle-array";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import { decode } from "html-entities";
-import { Entities } from "html-entities";
-var he = require('he');
+var he = require("he");
 
 const QuestionScreen = ({ navigation }) => {
   let answeredCorrectly = 0;
@@ -24,7 +21,6 @@ const QuestionScreen = ({ navigation }) => {
   var [finalScore, setFinalScore] = useState("");
   var [second, setSecond] = useState(0);
   var [responseCode, setResponseCode] = useState(null);
-  var [completedTime, setCompletedTime] = useState("");
   var [flag, setFlag] = useState(0);
 
   var TOTAL_QUESTIONS = navigation.getParam("amount");
@@ -47,15 +43,10 @@ const QuestionScreen = ({ navigation }) => {
     var shuffle = require("shuffle-array"),
       combineAnswers;
     shuffle(combineAnswers);
-
-  var newCombineAnswers = combineAnswers.map((value,index)=>{
-      return he.unescape(value)
-  })
-
-    setIndividualQuestion(
-      he.unescape(questions[counter].question)
-    //  questions[counter].question.replace(/(&quot\;)/g, '"')
-    );
+    var newCombineAnswers = combineAnswers.map((value, index) => {
+      return he.unescape(value);
+    });
+    setIndividualQuestion(he.unescape(questions[counter].question));
     setCorrectAnswer(he.unescape(questions[counter].correct_answer));
     setIndividualAnswers(newCombineAnswers);
   };
@@ -71,9 +62,7 @@ const QuestionScreen = ({ navigation }) => {
 
       if (finalResponseCode != 0) {
         setResponseCode(result.response_code);
-        // console.log("Entering zero")
       } else {
-        // console.log("Entering questions")
         setResponseCode(0);
         NextQuestion(result.results);
       }
@@ -82,12 +71,8 @@ const QuestionScreen = ({ navigation }) => {
 
   const QuestionsCompleted = () => {
     setAnsweredCorrect((state) => {
-       setFinalScore(state + "/" + TOTAL_QUESTIONS);
-      //  setCompletedTime((timeCompleted) => timeCompleted + currentDate);
-      var CompletedTime = currentDate;
+      setFinalScore(state + "/" + TOTAL_QUESTIONS);
       var FINAL_SCORE = state + "/" + TOTAL_QUESTIONS;
-      console.log("finalScore: " + finalScore);
-      console.log("CompletedTime: " + CompletedTime);
       setTimeout(() => {
         navigation.navigate("ScoreBoard");
       }, 1000);
@@ -96,16 +81,10 @@ const QuestionScreen = ({ navigation }) => {
     });
   };
 
-
-
   var entities = require("html-entities"),
     individualQuestion,
     individualAnswer;
   entities.decode(individualQuestion, individualAnswer);
-
-  /**
-  @description	SHUFFLE THE ANSWERS
-  */
 
   if (responseCode == null) {
     return (
@@ -116,8 +95,10 @@ const QuestionScreen = ({ navigation }) => {
   } else if (responseCode == 1 || responseCode == 2 || responseCode == 3) {
     return (
       <View style={styles.container}>
-        {/* {console.log("Response code: " + responseCode)} */}
-        <Text>Questions unavailable with selected options.{"\n"}Please navigate back and try a different selection.</Text>
+        <Text>
+          Questions unavailable with selected options.{"\n"}Please navigate back
+          and try a different selection.
+        </Text>
       </View>
     );
   } else {
@@ -131,11 +112,8 @@ const QuestionScreen = ({ navigation }) => {
           <TouchableOpacity
             key={index}
             onPress={() => {
-              console.log(
-                "counter + TOTAL_QUESTIONS: " + counter + " " + TOTAL_QUESTIONS
-              );
               /**
-              @description	IF QUIZ IS COMPLETED
+              @description	ANSWER VALIDATION
              */
               if (correctAnswer === item) {
                 setAnsweredCorrect(answeredCorrect + 1);
@@ -143,6 +121,10 @@ const QuestionScreen = ({ navigation }) => {
               } else {
                 setWrongMessage("WRONG!");
               }
+
+              /**
+              @description	IF QUIZ IS COMPLETED
+             */
               if (counter == TOTAL_QUESTIONS) {
                 setFlag(1);
                 QuestionsCompleted();
@@ -154,30 +136,6 @@ const QuestionScreen = ({ navigation }) => {
                   NextQuestion(questions);
                 }, 500);
               }
-              /**
-              @description	ANSWER VALIDATION
-             */
-
-              // console.log("countdown: " + second);
-
-              /* correctAnswer === item
-                ? (setAnsweredCorrect(
-                  (correctlyAnswered) => correctlyAnswered + 1
-                  ),
-                  setCorrectMessage("CORRECT!"))
-                : setWrongMessage("WRONG!");
-                */
-
-              // if (correctAnswer === item) {
-              //   setAnsweredCorrect(answeredCorrect + 1);
-              //   setMessage("You have answered correctly");
-              // } else {
-              //   setMessage("You have answered incorrectly");
-              // }
-
-              /**
-              @description	DELAY TO NEXT QUESTION
-             */
             }}
           >
             <Text style={styles.answerStyle}>{item}</Text>
@@ -195,8 +153,6 @@ const QuestionScreen = ({ navigation }) => {
             {wrongMessage}
           </Text>
         </View>
-
-        {/* {console.log("finalScore2: " + finalScore)} */}
 
         <View style={styles.countdownTimerStyle}>
           <CountdownCircleTimer

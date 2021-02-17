@@ -6,15 +6,11 @@ import pushResults from "../hooks/pushResults";
 
 const ScoreBoardScreen = ({ navigation }) => {
   const [currentDate] = DateTimeSetter();
-  // const CompletedTime = navigation.getParam("CompletedTime");
-  // const finalScore = navigation.getParam("finalScore");
   const [AddResultsToDb, dbResults] = pushResults();
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => true);
   }, []);
-
-  //   const GetResultsFromDb = ()
 
   if (!dbResults.length) {
     return (
@@ -35,7 +31,6 @@ const ScoreBoardScreen = ({ navigation }) => {
           data={dbResults}
           keyExtractor={(result) => result.completedTime}
           renderItem={({ item }) => {
-            // console.log("item: " + item)
             return (
               <View style={styles.ScoreResultsStyle}>
                 <Text style={styles.CompletedTimeStyle}>

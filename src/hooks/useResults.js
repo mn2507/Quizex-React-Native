@@ -7,15 +7,6 @@ export default () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [responseCode, setResponseCode] = useState(0);
 
-  // const getAmount = async (amountInfo) => {
-  //   try {
-  //     const response = await opentdb.get(`/api.php?amount=${amountInfo}`);
-  //     setAmount(response.data); //use amount to set questions
-  //   } catch (e) {
-  //     setErrorMessage("Something went wrong!");
-  //   }
-  // };
-
   const getCategories = async () => {
     try{
     const response = await opentdb.get("/api_category.php");
@@ -29,7 +20,6 @@ export default () => {
     });
     categories.push({ value: -1, label: "Any", selected: "true" });
     setCategory(categories);
-    // console.log(response.data.trivia_categories);
   } catch (e){
     console.log("getCategories " + e)
   }
@@ -43,13 +33,7 @@ export default () => {
           (difficulty !== "any" ? `&difficulty=${difficulty}` : "") +
           (type !== "any" ? `&type=${type}` : "")
       );
-      // console.log("response" + response.data.results)
-  //    console.log("question response: " + response.data.results[0].question);
-      // console.log("cat response: " + response.data.results[0].category);
-   //   setQuestions(response.data.results);
-  //    setResponseCode(response.data.response_code);
       return response.data;
-      // console.log(response.data.response_code + "code");
     } catch (e) {
       setErrorMessage("Something went wrong! " + e);
     }
