@@ -8,6 +8,7 @@ import jsonServer from "../api/jsonServer";
 import pushResults from "../hooks/pushResults";
 import { Header } from "react-native/Libraries/NewAppScreen";
 import shuffle from "shuffle-array";
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 
 const QuestionScreen = ({ navigation }) => {
   var [questions, setQuestions] = useState([]);
@@ -15,11 +16,12 @@ const QuestionScreen = ({ navigation }) => {
   var [individualAnswer, setIndividualAnswers] = useState([]);
 
   var [correctAnswer, setCorrectAnswer] = useState([]);
-  var [message, setMessage] = useState("");
+  var [correctMessage, setCorrectMessage] = useState("");
+  var [wrongMessage, setWrongMessage] = useState("");
   var [counter, setCounter] = useState(0);
   var [answeredCorrect, setAnsweredCorrect] = useState(0);
   var [finalScore, setFinalScore] = useState("");
-  var [second, setSecond] = useState(10);
+  var [second, setSecond] = useState(0);
   var [completedTime, setCompletedTime] = useState("");
 
   var TOTAL_QUESTIONS = navigation.getParam("amount");
@@ -63,9 +65,9 @@ const QuestionScreen = ({ navigation }) => {
   /**
   @description	SHUFFLE THE ANSWERS
   */
-  var shuffle = require("shuffle-array"),
-    individualAnswer;
-  shuffle(individualAnswer);
+  // var shuffle = require("shuffle-array"),
+  //   individualAnswer;
+  // shuffle(individualAnswer);
 
   if (!questions.length) {
     return (
@@ -99,11 +101,14 @@ const QuestionScreen = ({ navigation }) => {
              */
               if (counter == TOTAL_QUESTIONS) {
                 setFinalScore(answeredCorrect + "/" + TOTAL_QUESTIONS);
-                setCompletedTime(currentDate);
+                setCompletedTime(
+                  (timeCompleted) => timeCompleted + currentDate
+                );
                 var CompletedTime = currentDate;
                 var FINAL_SCORE = answeredCorrect + "/" + TOTAL_QUESTIONS;
                 console.log("finalScore: " + finalScore);
                 console.log("CompletedTime: " + CompletedTime);
+                console.log("completedTime: " + completedTime);
 
                 /**
               @description	NAVIGATE TO SCOREBOARD
@@ -117,12 +122,14 @@ const QuestionScreen = ({ navigation }) => {
               /**
               @description	ANSWER VALIDATION
              */
-              // setSecond(10);
+
               // console.log("countdown: " + second);
               correctAnswer === item
-                ? (setAnsweredCorrect(answeredCorrect + 1),
-                  setMessage("You have answered correctly"))
-                : setMessage("You have answered incorrectly");
+                ? (setAnsweredCorrect(
+                    (correctlyAnswered) => correctlyAnswered + 1
+                  ),
+                  setCorrectMessage("CORRECT!"))
+                : setWrongMessage("WRONG!");
 
               // if (correctAnswer === item) {
               //   setAnsweredCorrect(answeredCorrect + 1);
@@ -135,10 +142,11 @@ const QuestionScreen = ({ navigation }) => {
               @description	DELAY TO NEXT QUESTION
              */
               setTimeout(() => {
-                setMessage("");
+                setCorrectMessage("");
+                setWrongMessage("");
+                setSecond((prevKey) => prevKey + 1);
                 NextQuestion(questions);
-              }, 1000);
-
+              }, 500);
               // setAnsweredCorrect([counter]["answered"] = "correct");
               // console.log("Chosen Answer", item);
               console.log("answercorrect: " + answeredCorrect);
@@ -147,9 +155,21 @@ const QuestionScreen = ({ navigation }) => {
             <Text style={styles.answerStyle}>{item}</Text>
           </TouchableOpacity>
         ))}
-        <Text>{message}</Text>
+        <View>
+          <Text
+            style={
+              correctMessage
+                ? styles.answerCorrectStyle
+                : styles.answerWrongStyle
+            }
+          >
+            {correctMessage}
+            {wrongMessage}
+          </Text>
+        </View>
+
         {console.log("finalScore2: " + finalScore)}
-        <Text>Final Score: {finalScore}</Text>
+        {/* <Text>Final Score: {finalScore}</Text> */}
         {/* <CountdownCircle
           seconds={second}
           radius={40}
@@ -160,6 +180,37 @@ const QuestionScreen = ({ navigation }) => {
           onTimeElapsed={() => console.log("Timer habis")}
           textStyle={{ fontSize: 20 }}
         /> */}
+        <View style={styles.countdownTimerStyle}>
+          <CountdownCircleTimer
+            key={second}
+            size={80}
+            isPlaying
+            duration={10}
+            colors={[["#004777", 0.33], ["#F7B801", 0.33], ["#A30000"]]}
+            onComplete={() => {
+              if (counter < TOTAL_QUESTIONS) {
+                setCorrectMessage("");
+                setWrongMessage("");
+                setSecond((prevKey) => prevKey + 1);
+                NextQuestion(questions);
+                console.log("timertrue" + counter + " " + TOTAL_QUESTIONS);
+                return [true, 1000];
+              } else if (counter == TOTAL_QUESTIONS) {
+                var CompletedTime = currentDate;
+                var FINAL_SCORE = answeredCorrect + "/" + TOTAL_QUESTIONS;
+                  navigation.navigate("ScoreBoard");
+                AddResultsToDb(CompletedTime, FINAL_SCORE);
+                return;
+              } else {
+                console.log("timerfalse" + counter + " " + TOTAL_QUESTIONS);
+                return [false, 0];
+              }
+            }}
+          />
+        </View>
+        <View style={styles.finalScoreContainer}>
+          <Text style={styles.finalScoreStyle}>{finalScore}</Text>
+        </View>
       </View>
     );
   }
@@ -169,6 +220,38 @@ const QuestionScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+  },
+  answerCorrectStyle: {
+    fontWeight: "bold",
+    fontSize: 30,
+    textAlign: "center",
+    color: "#6BD845",
+    marginVertical: 10,
+  },
+  answerWrongStyle: {
+    fontWeight: "bold",
+    fontSize: 30,
+    textAlign: "center",
+    color: "#E63E3E",
+    marginVertical: 10,
+  },
+  finalScoreContainer: {
+    marginTop: 15,
+    alignSelf: "center",
+  },
+  finalScoreHeader: {
+    fontSize: 15,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  finalScoreStyle: {
+    fontWeight: "bold",
+    fontSize: 35,
+    textAlign: "center",
+    color: "#6BD845",
+  },
+  countdownTimerStyle: {
+    alignSelf: "center",
   },
   LoadingContainer: {
     flexDirection: "row",
