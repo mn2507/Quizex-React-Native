@@ -11,6 +11,7 @@ import shuffle from "shuffle-array";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 
 const QuestionScreen = ({ navigation }) => {
+  let answeredCorrectly = 0;
   var [questions, setQuestions] = useState([]);
   var [individualQuestion, setIndividualQuestion] = useState("");
   var [individualAnswer, setIndividualAnswers] = useState([]);
@@ -22,6 +23,7 @@ const QuestionScreen = ({ navigation }) => {
   var [answeredCorrect, setAnsweredCorrect] = useState(0);
   var [finalScore, setFinalScore] = useState("");
   var [second, setSecond] = useState(0);
+  var [responseCode, setResponseCode] = useState(null);
   var [completedTime, setCompletedTime] = useState("");
 
   var TOTAL_QUESTIONS = navigation.getParam("amount");
@@ -31,7 +33,7 @@ const QuestionScreen = ({ navigation }) => {
     questions1,
     errorMessage,
     category,
-    responseCode,
+    responseCode8,
   ] = useResults();
   const [currentDate] = DateTimeSetter();
   const [AddResultsToDb, dbResults] = pushResults();
@@ -46,7 +48,8 @@ const QuestionScreen = ({ navigation }) => {
     );
     setCorrectAnswer(questions[counter].correct_answer);
     setIndividualAnswers(combineAnswers);
-    console.log("counter: " + counter);
+
+    // console.log("counter: " + counter);
   };
 
   // answeredCorrect[0]["answered"] = "Correctly";
@@ -58,7 +61,16 @@ const QuestionScreen = ({ navigation }) => {
       navigation.getParam("difficulty"),
       navigation.getParam("type")
     ).then(function (result) {
-      NextQuestion(result);
+      var finalResponseCode = result.response_code;
+
+      if (finalResponseCode != 0) {
+        setResponseCode(result.response_code);
+        // console.log("Entering zero")
+      } else {
+        // console.log("Entering questions")
+        setResponseCode(0);
+        NextQuestion(result.results);
+      }
     });
   }, []);
 
@@ -69,16 +81,16 @@ const QuestionScreen = ({ navigation }) => {
   //   individualAnswer;
   // shuffle(individualAnswer);
 
-  if (!questions.length) {
+  if (responseCode == null) {
     return (
       <View style={styles.LoadingContainer}>
         <Text style={styles.LoadingStyle}>Loading questions...</Text>
       </View>
     );
-  } else if (!responseCode == 0 || questions.length == null) {
+  } else if (responseCode == 1 || responseCode == 2 || responseCode == 3) {
     return (
       <View style={styles.container}>
-        {console.log("Response code: " + responseCode)}
+        {/* {console.log("Response code: " + responseCode)} */}
         <Text>Questions unavailable with these selection.</Text>
       </View>
     );
@@ -99,37 +111,56 @@ const QuestionScreen = ({ navigation }) => {
               /**
               @description	IF QUIZ IS COMPLETED
              */
-              if (counter == TOTAL_QUESTIONS) {
-                setFinalScore(answeredCorrect + "/" + TOTAL_QUESTIONS);
-                setCompletedTime(
-                  (timeCompleted) => timeCompleted + currentDate
-                );
-                var CompletedTime = currentDate;
-                var FINAL_SCORE = answeredCorrect + "/" + TOTAL_QUESTIONS;
-                console.log("finalScore: " + finalScore);
-                console.log("CompletedTime: " + CompletedTime);
-                console.log("completedTime: " + completedTime);
+              if (correctAnswer === item) {
+                setAnsweredCorrect(answeredCorrect + 1);
+                setCorrectMessage("CORRECT!");
 
-                /**
-              @description	NAVIGATE TO SCOREBOARD
-             */
+                //  console.log("Entering correct answer" + answeredCorrect)
+              } else {
+                setWrongMessage("WRONG!");
+              }
+              if (counter == TOTAL_QUESTIONS) {
+                setAnsweredCorrect((state) => {
+                  setFinalScore(state + "/" + TOTAL_QUESTIONS);
+                  setCompletedTime(
+                    (timeCompleted) => timeCompleted + currentDate
+                  );
+                  var CompletedTime = currentDate;
+                  var FINAL_SCORE = state + "/" + TOTAL_QUESTIONS;
+                  console.log("finalScore: " + finalScore);
+                  console.log("CompletedTime: " + CompletedTime);
+                  console.log("completedTime: " + completedTime);
+
+                  /**
+                @description	NAVIGATE TO SCOREBOARD
+               */
+                  setTimeout(() => {
+                    navigation.navigate("ScoreBoard");
+                  }, 1000);
+                  AddResultsToDb(CompletedTime, FINAL_SCORE);
+                  return;
+                });
+              } else {
                 setTimeout(() => {
-                  navigation.navigate("ScoreBoard");
-                }, 1000);
-                AddResultsToDb(CompletedTime, FINAL_SCORE);
-                return;
+                  setCorrectMessage("");
+                  setWrongMessage("");
+                  setSecond((prevKey) => prevKey + 1);
+                  NextQuestion(questions);
+                }, 500);
               }
               /**
               @description	ANSWER VALIDATION
              */
 
               // console.log("countdown: " + second);
-              correctAnswer === item
+
+              /* correctAnswer === item
                 ? (setAnsweredCorrect(
-                    (correctlyAnswered) => correctlyAnswered + 1
+                  (correctlyAnswered) => correctlyAnswered + 1
                   ),
                   setCorrectMessage("CORRECT!"))
                 : setWrongMessage("WRONG!");
+                */
 
               // if (correctAnswer === item) {
               //   setAnsweredCorrect(answeredCorrect + 1);
@@ -141,15 +172,10 @@ const QuestionScreen = ({ navigation }) => {
               /**
               @description	DELAY TO NEXT QUESTION
              */
-              setTimeout(() => {
-                setCorrectMessage("");
-                setWrongMessage("");
-                setSecond((prevKey) => prevKey + 1);
-                NextQuestion(questions);
-              }, 500);
+
               // setAnsweredCorrect([counter]["answered"] = "correct");
               // console.log("Chosen Answer", item);
-              console.log("answercorrect: " + answeredCorrect);
+              // console.log("answercorrect: " + answeredCorrect);
             }}
           >
             <Text style={styles.answerStyle}>{item}</Text>
@@ -168,18 +194,8 @@ const QuestionScreen = ({ navigation }) => {
           </Text>
         </View>
 
-        {console.log("finalScore2: " + finalScore)}
-        {/* <Text>Final Score: {finalScore}</Text> */}
-        {/* <CountdownCircle
-          seconds={second}
-          radius={40}
-          style={styles.itemStyle}
-          borderWidth={10}
-          color="#ff003f"
-          bgColor="#ffffff"
-          onTimeElapsed={() => console.log("Timer habis")}
-          textStyle={{ fontSize: 20 }}
-        /> */}
+        {/* {console.log("finalScore2: " + finalScore)} */}
+
         <View style={styles.countdownTimerStyle}>
           <CountdownCircleTimer
             key={second}
@@ -195,12 +211,6 @@ const QuestionScreen = ({ navigation }) => {
                 NextQuestion(questions);
                 console.log("timertrue" + counter + " " + TOTAL_QUESTIONS);
                 return [true, 1000];
-              } else if (counter == TOTAL_QUESTIONS) {
-                var CompletedTime = currentDate;
-                var FINAL_SCORE = answeredCorrect + "/" + TOTAL_QUESTIONS;
-                  navigation.navigate("ScoreBoard");
-                AddResultsToDb(CompletedTime, FINAL_SCORE);
-                return;
               } else {
                 console.log("timerfalse" + counter + " " + TOTAL_QUESTIONS);
                 return [false, 0];
