@@ -161,7 +161,6 @@ const QuestionScreen = ({ navigation }) => {
                 NextQuestion(questions);
                 return [true, 1000];
               } else if (counter == TOTAL_QUESTIONS && flag == true) {
-                console.log("testercircle3")
                 QuestionsCompleted();
                 return [false, 0];
               } else {
